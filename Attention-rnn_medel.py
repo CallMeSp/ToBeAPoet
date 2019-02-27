@@ -15,7 +15,7 @@ id2word, word2id = extract_character_vocab(traindatas)
 # 对字母进行转换
 keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
 pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]
-curlines_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] + [word2id['<EOS>']] for line in curlines]
+curlines_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] + [word2id['<END>']] for line in curlines]
 
 # 超参数
 # Number of Epochs
