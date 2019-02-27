@@ -93,5 +93,44 @@ def genProcessedData(filename):
             fw.write(tt[i] + ':' + '，'.join(pp[i]) + '\n')
 
 
+def genTrainData(filename):
+    filepath = './data/' + filename
+    titles, poems = loadCorpus(filepath)
+    trainDatas = []
+    count = {}
+    for step, poem in enumerate(poems):
+        try:
+            for i in range(len(poem)):
+                keyword = extractKeywordFromUser(poem[i], targetNum=1)[0]
+                preText = ','.join(poem[:i])
+                curLine = poem[i]
+                trainDatas.append([keyword, preText, curLine])
+                # print(keyword, '||', preText, '||', curLine)
+        except:
+            count[step] = 1
+            print(step, '/', '16786')
+    with open('./data/train-wujue.txt', 'w+') as fw:
+        for line in trainDatas:
+            fw.write('|'.join(line) + '\n')
+    print(len(count), '/', len(poems))
+
+
+def getTraindata(filename):
+    filepath = './data/' + filename
+    traindatas = []
+    keywords = []
+    pretexts = []
+    curlines = []
+    with open(filepath, 'r') as fr:
+        for line in fr.readlines():
+            line = line.strip().split('|')
+            keywords.append(line[0])
+            pretexts.append(line[1])
+            curlines.append(line[2])
+            traindatas.append([line[0], line[1], line[2]])
+    return traindatas, keywords, pretexts, curlines
+
+
 if __name__ == '__main__':
+    genTrainData('pro_wujue-all.txt')
     pass
