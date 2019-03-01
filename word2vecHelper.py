@@ -2,7 +2,7 @@ from myDataUtil import getTraindata
 import numpy as np
 
 def extract_character_vocab(data):
-    special_words = ['<PAD>', '<UNK>', '<START>', '<END>']
+    special_words = ['<PAD>', '<UNK>', '<START>', '<END>',',']
     set_words = list(set(
         [token for line in data for token in line[0] if len(token) > 0] +
         [token for line in data for token in line[1] if len(token) > 0] +

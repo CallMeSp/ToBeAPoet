@@ -204,6 +204,91 @@ def decoding_layer(target_letter_to_int, decoding_embedding_size, num_layers,
     return training_decoder_output, predicting_decoder_output
 
 
+def decoding_layer_attention(target_letter_to_int, decoding_embedding_size, num_layers, rnn_size,
+                             target_sequence_length, max_target_sequence_length, encoder_output, decoder_input):
+    '''
+        构造Decoder层
+
+        参数：
+        - target_letter_to_int: target数据的映射表
+        - decoding_embedding_size: embed向量大小
+        - num_layers: 堆叠的RNN单元数量
+        - rnn_size: RNN单元的隐层结点数量
+        - target_sequence_length: target数据序列长度
+        - max_target_sequence_length: target数据序列最大长度
+        - encoder_state: encoder端编码的状态向量
+        - decoder_input: decoder端输入
+    '''
+    # embedding
+    target_vocab_size = len(target_letter_to_int)
+    decoder_embeddings = tf.Variable(tf.random_uniform([target_vocab_size, decoding_embedding_size]))
+    decoder_embed_input = tf.nn.embedding_lookup(decoder_embeddings, decoder_input)
+
+    # rnn cell in decoder
+    def get_decoder_cell(rnn_size):
+        decoder_cell = tf.contrib.rnn.LSTMCell(rnn_size, initializer=tf.random_uniform_initializer(-0.1, 0.1, seed=2))
+        return decoder_cell
+
+    cell = tf.contrib.rnn.MultiRNNCell([get_decoder_cell(rnn_size) for _ in range(num_layers)])
+    # full connection
+    output_layer = Dense(target_vocab_size, kernel_initializer=tf.truncated_normal_initializer(mean=0.0, stddev=0.1))
+    # training decoder
+    with tf.variable_scope("decode"):
+        # 得到help对象
+        # 说明：Decoder端用来训练的函数。
+        # 这个函数不会把t-1阶段的输出作为t阶段的输入，而是把target中的真实值直接输入给RNN。
+        # 主要参数是inputs和sequence_length。返回helper对象，可以作为BasicDecoder函数的参数。
+        training_helper = tf.contrib.seq2seq.TrainingHelper(inputs=decoder_embed_input,
+                                                            sequence_length=target_sequence_length, time_major=False)
+        # attention cell
+        attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(rnn_size, encoder_output)
+        decoder_cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=rnn_size)
+        de_state = decoder_cell.zero_state(batch_size, dtype=tf.float32)
+        out_cell = tf.contrib.rnn.OutputProjectionWrapper(decoder_cell, target_vocab_size)
+        decoder = tf.contrib.seq2seq.BasicDecoder(out_cell, training_helper, de_state,
+                                                  tf.layers.Dense(decoding_embedding_size))
+        # build decoder
+        training_decoder_output, training_decoder_state, training_decoder_sequence_lengths = tf.contrib.seq2seq.dynamic_decode(
+            decoder, swap_memory=True)
+    # predicting decoder
+    # share parameters with 'training'
+    # with tf.variable_scope("decode", reuse=True):
+    #     start_tokens = tf.tile(tf.constant([target_letter_to_int['<START>']], dtype=tf.int32), [batch_size],
+    #                            name='start_tokens')
+    #     # send the output of 't-1' to 't' as input
+    #     predicting_helper = tf.contrib.seq2seq.GreedyEmbeddingHelper(decoder_embeddings, start_tokens,
+    #                                                                  target_letter_to_int['<END>'])
+    #     # attention cell
+    #     attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(rnn_size, encoder_output)
+    #     decoder_cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=rnn_size)
+    #     de_state = decoder_cell.zero_state(batch_size, dtype=tf.float32)
+    #     out_cell = tf.contrib.rnn.OutputProjectionWrapper(decoder_cell, target_vocab_size)
+    #     decoder = tf.contrib.seq2seq.BasicDecoder(out_cell, training_helper, de_state,
+    #                                               tf.layers.Dense(decoding_embedding_size))
+    #     # build decoder
+    #     training_decoder_output, training_decoder_state, training_decoder_sequence_lengths = tf.contrib.seq2seq.dynamic_decode(
+    #         decoder, swap_memory=True)
+    return training_decoder_output, training_decoder_state, training_decoder_sequence_lengths
+
+
+def seq2seq_model_attention(input_data, targets, lr, target_sequence_length,
+                            max_target_sequence_length, source_sequence_length,
+                            source_vocab_size, target_vocab_size, encoder_embedding_size,
+                            decoder_embedding_size, rnn_size, num_layers):
+    encoder_outputs, _ = get_encoder_layer(
+        input_data, rnn_size, num_layers, source_sequence_length,
+        source_vocab_size, encoding_embedding_size)
+    # 预处理后的decoder输入
+    decoder_input = process_decoder_input(targets, target_letter_to_int,
+                                          batch_size)
+    decoder_output, decoder_state, deocoder_seq_lens = decoding_layer_attention(
+        target_letter_to_int, decoding_embedding_size, num_layers, rnn_size,
+        target_sequence_length, max_target_sequence_length, encoder_outputs,
+        decoder_input)
+
+    return decoder_output, decoder_state
+
+
 def seq2seq_model(input_data, targets, lr, target_sequence_length,
                   max_target_sequence_length, source_sequence_length,
                   source_vocab_size, target_vocab_size, encoder_embedding_size,
@@ -212,11 +297,9 @@ def seq2seq_model(input_data, targets, lr, target_sequence_length,
     _, encoder_state = get_encoder_layer(
         input_data, rnn_size, num_layers, source_sequence_length,
         source_vocab_size, encoding_embedding_size)
-
     # 预处理后的decoder输入
     decoder_input = process_decoder_input(targets, target_letter_to_int,
                                           batch_size)
-
     # 将状态向量与输入传递给decoder
     training_decoder_output, predicting_decoder_output = decoding_layer(
         target_letter_to_int, decoding_embedding_size, num_layers, rnn_size,
@@ -353,6 +436,88 @@ def train():
         print('Model Trained and Saved')
 
 
+# Attention 版本的train
+def train_attention():
+    # 构造graph
+    train_graph = tf.Graph()
+    with train_graph.as_default():
+        # 获得模型输入
+        input_data, targets, lr, target_sequence_length, max_target_sequence_length, source_sequence_length = get_inputs(
+        )
+        training_decoder_output, training_decoder_state = seq2seq_model_attention(
+            input_data, targets, lr, target_sequence_length,
+            max_target_sequence_length, source_sequence_length,
+            len(source_letter_to_int), len(target_letter_to_int),
+            encoding_embedding_size, decoding_embedding_size, rnn_size, num_layers)
+        training_logits = tf.identity(training_decoder_output.rnn_output, 'logits')
+        masks = tf.sequence_mask(
+            target_sequence_length,
+            max_target_sequence_length,
+            dtype=tf.float32,
+            name='masks')
+        with tf.name_scope("optimization"):
+            # Loss function
+            cost = tf.contrib.seq2seq.sequence_loss(training_logits, targets,
+                                                    masks)
+            # Optimizer
+            optimizer = tf.train.AdamOptimizer(lr)
+            # Gradient Clipping
+            gradients = optimizer.compute_gradients(cost)
+            capped_gradients = [(tf.clip_by_value(grad, -5., 5.), var)
+                                for grad, var in gradients if grad is not None]
+            train_op = optimizer.apply_gradients(capped_gradients)
+    # 将数据集分割为train和validation
+    train_source = source_int[batch_size:]
+    train_target = target_int[batch_size:]
+    # 留出一个batch进行验证
+    valid_source = source_int[:batch_size]
+    valid_target = target_int[:batch_size]
+    (valid_targets_batch, valid_sources_batch, valid_targets_lengths, valid_sources_lengths) = next(
+        get_batches(valid_target, valid_source, batch_size,
+                    source_letter_to_int['<PAD>'],
+                    target_letter_to_int['<PAD>']))
+
+    display_step = 50  # 每隔50轮输出loss
+    checkpoint = "./trained_model_attention.ckpt"
+    with tf.Session(graph=train_graph) as sess:
+        sess.run(tf.global_variables_initializer())
+        for epoch_i in range(1, epochs + 1):
+            for batch_i, (targets_batch, sources_batch, targets_lengths, sources_lengths) in enumerate(
+                    get_batches(train_target, train_source, batch_size,
+                                source_letter_to_int['<PAD>'],
+                                target_letter_to_int['<PAD>'])):
+                _, loss = sess.run(
+                    [train_op, cost],
+                    {input_data: sources_batch,
+                     targets: targets_batch,
+                     lr: learning_rate,
+                     target_sequence_length: targets_lengths,
+                     source_sequence_length: sources_lengths})
+
+                if batch_i % display_step == 0:
+                    # 计算validation loss
+                    validation_loss = sess.run(
+                        [cost],
+                        {input_data: valid_sources_batch,
+                         targets: valid_targets_batch,
+                         lr: learning_rate,
+                         target_sequence_length: valid_targets_lengths,
+                         source_sequence_length: valid_sources_lengths})
+
+                    print('Epoch {:>3}/{} Batch {:>4}/{} - Training Loss: {:>6.3f}  - Validation loss: {:>6.3f}'
+                          .format(epoch_i,
+                                  epochs,
+                                  batch_i,
+                                  len(train_source) // batch_size,
+                                  loss,
+                                  validation_loss[0]))
+
+        # 保存模型
+        saver = tf.train.Saver()
+        saver.save(sess, checkpoint)
+        print('Model Trained and Saved')  # 构造graph
+
+
 if __name__ == '__main__':
     # Check TensorFlow Version
     assert LooseVersion(tf.__version__) >= LooseVersion(
@@ -387,9 +552,9 @@ if __name__ == '__main__':
     # Number of Layers
     num_layers = 2
     # Embedding Size
-    encoding_embedding_size = 15
-    decoding_embedding_size = 15
+    encoding_embedding_size = 30
+    decoding_embedding_size = 30
     # Learning Rate
     learning_rate = 0.001
-    predict()
+    train_attention()
     pass

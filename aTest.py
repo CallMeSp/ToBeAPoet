@@ -146,13 +146,80 @@ def seq2seq_model(input_data, targets, lr, target_sequence_length, max_target_se
     training_decoder_output, predicting_decoder_output = decoding_layer()
 
 
+def decoding_layer_attention(target_letter_to_int, decoding_embedding_size, num_layers, rnn_size,
+                             target_sequence_length,
+                             max_target_sequence_length, encoder_state, encoder_output, decoder_input):
+    '''
+        构造Decoder层
+
+        参数：
+        - target_letter_to_int: target数据的映射表
+        - decoding_embedding_size: embed向量大小
+        - num_layers: 堆叠的RNN单元数量
+        - rnn_size: RNN单元的隐层结点数量
+        - target_sequence_length: target数据序列长度
+        - max_target_sequence_length: target数据序列最大长度
+        - encoder_state: encoder端编码的状态向量
+        - decoder_input: decoder端输入
+    '''
+    # embedding
+    target_vocab_size = len(target_letter_to_int)
+    decoder_embeddings = tf.Variable(tf.random_uniform([target_vocab_size, decoding_embedding_size]))
+    decoder_embed_input = tf.nn.embedding_lookup(decoder_embeddings, decoder_input)
+
+    # rnn cell in decoder
+    def get_decoder_cell(rnn_size):
+        decoder_cell = tf.contrib.rnn.LSTMCell(rnn_size, initializer=tf.random_uniform_initializer(-0.1, 0.1, seed=2))
+        return decoder_cell
+
+    cell = tf.contrib.rnn.MultiRNNCell([get_decoder_cell(rnn_size) for _ in range(num_layers)])
+    # full connection
+    output_layer = Dense(target_vocab_size, kernel_initializer=tf.truncated_normal_initializer(mean=0.0, stddev=0.1))
+    # training decoder
+    with tf.variable_scope("decode"):
+        # 得到help对象
+        # 说明：Decoder端用来训练的函数。
+        # 这个函数不会把t-1阶段的输出作为t阶段的输入，而是把target中的真实值直接输入给RNN。
+        # 主要参数是inputs和sequence_length。返回helper对象，可以作为BasicDecoder函数的参数。
+        training_helper = tf.contrib.seq2seq.TrainingHelper(inputs=decoder_embed_input,
+                                                            sequence_length=target_sequence_length, time_major=False)
+        # attention cell
+        attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(rnn_size, encoder_output)
+        decoder_cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=rnn_size)
+        de_state = decoder_cell.zero_state(batch_size, dtype=tf.float32)
+        out_cell = tf.contrib.rnn.OutputProjectionWrapper(decoder_cell, target_vocab_size)
+        decoder = tf.contrib.seq2seq.BasicDecoder(out_cell, training_helper, de_state,
+                                                  tf.layers.Dense(decoding_embedding_size))
+        # build decoder
+        training_decoder_output, training_decoder_state, training_decoder_sequence_lengths = tf.contrib.seq2seq.dynamic_decode(
+            decoder, swap_memory=True)
+    # predicting decoder
+    # share parameters with 'training'
+    with tf.variable_scope("decode", reuse=True):
+        start_tokens = tf.tile(tf.constant([target_letter_to_int['<START>']], dtype=tf.int32), [batch_size],
+                               name='start_tokens')
+        # send the output of 't-1' to 't' as input
+        predicting_helper = tf.contrib.seq2seq.GreedyEmbeddingHelper(decoder_embeddings, start_tokens,
+                                                                     target_letter_to_int['<END>'])
+        # attention cell
+        attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(rnn_size, encoder_output)
+        decoder_cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=rnn_size)
+        de_state = decoder_cell.zero_state(batch_size, dtype=tf.float32)
+        out_cell = tf.contrib.rnn.OutputProjectionWrapper(decoder_cell, target_vocab_size)
+        decoder = tf.contrib.seq2seq.BasicDecoder(out_cell, training_helper, de_state,
+                                                  tf.layers.Dense(decoding_embedding_size))
+        # build decoder
+        training_decoder_output, training_decoder_state, training_decoder_sequence_lengths = tf.contrib.seq2seq.dynamic_decode(
+            decoder, swap_memory=True)
+
+
 def attention(inputs, attention_size, time_major=False, return_alphas=False):
     if isinstance(inputs, tuple):
         # In case of Bi-RNN, concatenate the forward and the backward RNN outputs.
         inputs = tf.concat(inputs, 2)
     if time_major:
         # (T,B,D) => (B,T,D)
-        inputs = tf.array_ops.transpose(inputs, [1, 0, 2])
+        inputs = tf.transpose(inputs, [1, 0, 2])
     hidden_size = inputs.shape[2].value  # D value - hidden size of the RNN layer
     # Trainable parameters
     w_omega = tf.Variable(tf.random_normal([hidden_size, attention_size], stddev=0.1))
