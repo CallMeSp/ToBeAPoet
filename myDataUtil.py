@@ -1,4 +1,7 @@
 from textrank4zh import TextRank4Keyword
+import warnings
+
+warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 import synonyms
 import re
 import numpy as np
@@ -9,7 +12,7 @@ from zhdic import zh2Hans
 def loadCorpus(filename):
     title_list = []
     poem_list = []
-    with open(filename, 'r') as fr:
+    with open(filename, 'r', encoding='utf8') as fr:
         for line in fr.readlines():
             title = line.strip().split(':')[0]
             poem = [
@@ -88,7 +91,7 @@ def genProcessedData(filename):
     filepath = './data/' + filename
     titles, poems = loadCorpus(filepath)
     tt, pp = getProcecessedPoems(titles, poems)
-    with open('./data/pro_' + filename, 'w+') as fw:
+    with open('./data/pro_' + filename, 'w+', encoding='utf8') as fw:
         for i in range(len(tt)):
             fw.write(tt[i] + ':' + '，'.join(pp[i]) + '\n')
 
@@ -109,7 +112,7 @@ def genTrainData(filename):
         except:
             count[step] = 1
             print(step, '/', '16786')
-    with open('./data/train-wujue.txt', 'w+') as fw:
+    with open('./data/train-wujue.txt', 'w+', encoding='utf8') as fw:
         for line in trainDatas:
             fw.write('|'.join(line) + '\n')
     print(len(count), '/', len(poems))
@@ -121,7 +124,7 @@ def getTraindata(filename):
     keywords = []
     pretexts = []
     curlines = []
-    with open(filepath, 'r') as fr:
+    with open(filepath, 'r', encoding='utf8') as fr:
         for line in fr.readlines():
             line = line.strip().split('|')
             keywords.append(line[0])

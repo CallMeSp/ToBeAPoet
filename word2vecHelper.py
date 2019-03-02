@@ -23,7 +23,7 @@ def pad_sentence_batch(sentence_batch, pad_int):
     max_sentence = max([len(sentence) for sentence in sentence_batch])
     return [sentence + [pad_int] * (max_sentence - len(sentence)) for sentence in sentence_batch]
 
-def get_batches(targets, sources, batch_size, pad_int):
+def get_batches(targets, sources, batch_size, source_pad_int, target_pad_int):
     '''
     定义生成器，用来获取batch
     '''
@@ -32,8 +32,8 @@ def get_batches(targets, sources, batch_size, pad_int):
         sources_batch = sources[start_i:start_i + batch_size]
         targets_batch = targets[start_i:start_i + batch_size]
         # 补全序列
-        pad_sources_batch = np.array(pad_sentence_batch(sources_batch, pad_int))
-        pad_targets_batch = np.array(pad_sentence_batch(targets_batch, pad_int))
+        pad_sources_batch = np.array(pad_sentence_batch(sources_batch, source_pad_int))
+        pad_targets_batch = np.array(pad_sentence_batch(targets_batch, target_pad_int))
 
         # 记录每条记录的长度
         targets_lengths = []
