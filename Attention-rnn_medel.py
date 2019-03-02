@@ -5,40 +5,23 @@ from tensorflow.python.layers.core import Dense
 import myDataUtil
 from word2vecHelper import extract_character_vocab, get_batches
 
-# 构造映射表
-traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
-
-id2word, word2id = extract_character_vocab(traindatas)
-# 对字母进行转换
-keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
-pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]
-curlines_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] + [word2id['<END>']] for line in curlines]
-
-# 超参数
-# Number of Epochs
-epochs = 60
-# Batch Size
-batch_size = 128
-# RNN Size
-rnn_size = 196
-# Number of Layers
-num_layers = 2
-# Embedding Size
-encoding_embedding_size = 150
-decoding_embedding_size = 150
-# Learning Rate
-learning_rate = 0.001
-
 
 def get_inputs():
     '''
-    :return:模型输入tensor
+    模型输入tensor
     '''
     inputs = tf.placeholder(tf.int32, [None, None], name='inputs')
     targets = tf.placeholder(tf.int32, [None, None], name='targets')
-    target_sequence_length = tf.placeholder(tf.int32, (None,), name='target_sequence_length')
-    max_target_sequence_length = tf.reduce_max(target_sequence_length, name='max_target_len')
-    source_sequence_length = tf.placeholder(tf.int32, (None,), name='source_sequence_length')
+    learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+
+    # 定义target序列最大长度（之后target_sequence_length和source_sequence_length会作为feed_dict的参数）
+    target_sequence_length = tf.placeholder(
+        tf.int32, (None,), name='target_sequence_length')
+    max_target_sequence_length = tf.reduce_max(
+        target_sequence_length, name='max_target_len')
+    source_sequence_length = tf.placeholder(
+        tf.int32, (None,), name='source_sequence_length')
+
     return inputs, targets, learning_rate, target_sequence_length, max_target_sequence_length, source_sequence_length
 
 
@@ -196,7 +179,6 @@ def train_attention():
             len(word2id), len(word2id),
             encoding_embedding_size, decoding_embedding_size, rnn_size, num_layers)
         training_logits = tf.identity(training_decoder_output.rnn_output, 'logits')
-        print(training_logits)
         predicting_logits = tf.identity(
             predict_output.sample_id, name='predictions')
         masks = tf.sequence_mask(
@@ -216,11 +198,11 @@ def train_attention():
                                 for grad, var in gradients if grad is not None]
             train_op = optimizer.apply_gradients(capped_gradients)
     # 将数据集分割为train和validation
-    train_source = pretexts[batch_size:]
-    train_target = curlines[batch_size:]
+    train_source = keywords_int[batch_size:]
+    train_target = curlines_int[batch_size:]
     # 留出一个batch进行验证
-    valid_source = pretexts[:batch_size]
-    valid_target = curlines[:batch_size]
+    valid_source = keywords_int[:batch_size]
+    valid_target = curlines_int[:batch_size]
     (valid_targets_batch, valid_sources_batch, valid_targets_lengths, valid_sources_lengths) = next(
         get_batches(valid_target, valid_source, batch_size,
                     word2id['<PAD>'],
@@ -267,4 +249,26 @@ def train_attention():
 
 
 if __name__ == '__main__':
+    # 构造映射表
+    traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
+    id2word, word2id = extract_character_vocab(traindatas)
+    # 对字母进行转换
+    keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
+    pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]
+    curlines_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] + [word2id['<END>']] for line in
+                    curlines]
+    # 超参数
+    # Number of Epochs
+    epochs = 60
+    # Batch Size
+    batch_size = 128
+    # RNN Size
+    rnn_size = 196
+    # Number of Layers
+    num_layers = 2
+    # Embedding Size
+    encoding_embedding_size = 150
+    decoding_embedding_size = 150
+    # Learning Rate
+    learning_rate = 0.001
     train_attention()

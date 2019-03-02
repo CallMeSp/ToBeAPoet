@@ -485,7 +485,6 @@ def train_attention():
         get_batches(valid_target, valid_source, batch_size,
                     source_letter_to_int['<PAD>'],
                     target_letter_to_int['<PAD>']))
-
     display_step = 50  # 每隔50轮输出loss
     checkpoint = "./model/trained_model_attention.ckpt"
     with tf.Session(graph=train_graph) as sess:

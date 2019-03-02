@@ -21,7 +21,7 @@ def pad_sentence_batch(sentence_batch, pad_int):
     - pad_int: <PAD>对应索引号
     '''
     max_sentence = max([len(sentence) for sentence in sentence_batch])
-    return [sentence + [pad_int] * (max_sentence - len(sentence)) for sentence in sentence_batch]
+    return [list(sentence) + [pad_int] * (max_sentence - len(sentence)) for sentence in sentence_batch]
 
 def get_batches(targets, sources, batch_size, source_pad_int, target_pad_int):
     '''
