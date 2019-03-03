@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.layers.core import Dense
 import myDataUtil
-from word2vecHelper import extract_character_vocab, get_batches, getbatches_modified
+from word2vecHelper import extract_character_vocab, get_batches, getbatches_modified, genwordEmbedding
 
 
 def get_inputs():
@@ -85,7 +85,8 @@ def get_encoder_layer(input_data, rnn_size, num_layers, source_sequence_length, 
 def get_encoder_layer_modified(batch_keyword_ids, batch_pretext_ids, rnn_size, num_layers, keywords_length,
                                pretexts_length, vocab_size, encoding_embedding_size):
     # encoder_embedding
-    encoder_embeddings = tf.Variable(tf.random_uniform([vocab_size, decoding_embedding_size]))
+    encoder_embeddings = tf.Variable(WORDEMBEDDING)
+    print('encoder use preTrained wordembedding_char')
     encoder_embed_keywords = tf.nn.embedding_lookup(encoder_embeddings, batch_keyword_ids)
     encoder_embed_pretexts = tf.nn.embedding_lookup(encoder_embeddings, batch_pretext_ids)
 
@@ -155,7 +156,8 @@ def decoding_layer(target_letter_to_int, decoding_embedding_size, num_layers, rn
     '''
     # embedding
     target_vocab_size = len(target_letter_to_int)
-    decoder_embeddings = tf.Variable(tf.random_uniform([target_vocab_size, decoding_embedding_size]))
+    decoder_embeddings = tf.Variable(WORDEMBEDDING)
+    print('decoder use preTrained wordembedding_char')
     decoder_embed_input = tf.nn.embedding_lookup(decoder_embeddings, decoder_input)
 
     # rnn cell in decoder
@@ -431,7 +433,8 @@ if __name__ == '__main__':
     # 构造映射表
     traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
     id2word, word2id = extract_character_vocab(traindatas)
-    print('word2id lenths:', len(word2id))
+    WORDEMBEDDING = genwordEmbedding(id2word)
+    print('word2id lenths:', len(word2id), 'wordembedding_shape', len(WORDEMBEDDING),',',len(WORDEMBEDDING[0]))
     # 对字母进行转换
     keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
     pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]

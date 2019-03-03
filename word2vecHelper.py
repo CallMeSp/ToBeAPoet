@@ -1,5 +1,6 @@
 from myDataUtil import getTraindata
 import numpy as np
+import gensim
 
 
 def extract_character_vocab(data):
@@ -79,6 +80,17 @@ def getbatches_modified(targets, keywords, pretexts, batch_size, pad_int):
         yield pad_targets_batch, pad_keywords_batch, pad_pretexts_batch, targets_lengths, keywords_lengths, pretexts_lengths
 
 
+def genwordEmbedding(id2word={}):
+    modelpath = './data/token_vec_300.bin'
+    embeddingModel = gensim.models.KeyedVectors.load_word2vec_format(modelpath, binary=False).wv
+    embeddingMatrix = []
+    for i in range(len(id2word)):
+        try:
+            embeddingMatrix.append(embeddingModel[id2word[i]])
+        except:
+            embeddingMatrix.append(list(np.random.rand(300)))
+    return embeddingMatrix
+
+
 if __name__ == '__main__':
-    id2word, word2id = extract_character_vocab(getTraindata('train-wujue.txt')[0])
-    print(word2id['扬'])
+    genwordEmbedding(None)
