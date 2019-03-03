@@ -38,6 +38,9 @@ def get_encoder_layer(input_data, rnn_size, num_layers, source_sequence_length, 
     :return: encoder_output, encoder_state
     '''
     # encoder_embedding
+    encoder_embeddings = tf.Variable(tf.random_uniform([source_vocab_size, decoding_embedding_size]))
+    decoder_embed_input = tf.nn.embedding_lookup(encoder_embeddings, input_data)
+
     encoder_embed_input = tf.contrib.layers.embed_sequence(input_data, source_vocab_size, encoding_embedding_size)
 
     #  rnn cell
@@ -50,7 +53,7 @@ def get_encoder_layer(input_data, rnn_size, num_layers, source_sequence_length, 
     (encoder_fw_outputs, encoder_bw_outputs), (encoder_fw_state, encoder_bw_state) = tf.nn.bidirectional_dynamic_rnn(
         cell_fw=encoder_fw_cell, cell_bw=encoder_bw_cell, inputs=encoder_embed_input,
         sequence_length=source_sequence_length, dtype=tf.float32, time_major=False)
-
+    # shape:[batch_size,max_length,rnn_size]
     encoder_outputs = tf.concat((encoder_fw_outputs, encoder_bw_outputs), 2)
     encoder_final_state_c = tf.concat((encoder_fw_state.c, encoder_bw_state.c), 1)
     encoder_final_state_h = tf.concat((encoder_fw_state.h, encoder_bw_state.h), 1)
@@ -198,16 +201,16 @@ def train_attention():
                                 for grad, var in gradients if grad is not None]
             train_op = optimizer.apply_gradients(capped_gradients)
     # 将数据集分割为train和validation
-    train_source = keywords_int[batch_size:]
-    train_target = curlines_int[batch_size:]
+    train_source = keywords_int[50*batch_size:]
+    train_target = curlines_int[50*batch_size:]
     # 留出一个batch进行验证
-    valid_source = keywords_int[:batch_size]
-    valid_target = curlines_int[:batch_size]
+    valid_source = keywords_int[:50*batch_size]
+    valid_target = curlines_int[:50*batch_size]
     (valid_targets_batch, valid_sources_batch, valid_targets_lengths, valid_sources_lengths) = next(
         get_batches(valid_target, valid_source, batch_size,
                     word2id['<PAD>'],
                     word2id['<PAD>']))
-    display_step = 32  # 每隔50轮输出loss
+    display_step = 50  # 每隔50轮输出loss
     checkpoint = "./model/trained_model_attention.ckpt"
     with tf.Session(graph=train_graph) as sess:
         sess.run(tf.global_variables_initializer())
@@ -252,6 +255,7 @@ if __name__ == '__main__':
     # 构造映射表
     traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
     id2word, word2id = extract_character_vocab(traindatas)
+    print('word2id lenths:',len(word2id))
     # 对字母进行转换
     keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
     pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]
