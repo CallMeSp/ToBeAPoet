@@ -1,6 +1,7 @@
 from myDataUtil import getTraindata
 import numpy as np
 
+
 def extract_character_vocab(data):
     special_words = ['<PAD>', '<UNK>', '<START>', '<END>']
     set_words = list(set(
@@ -22,6 +23,7 @@ def pad_sentence_batch(sentence_batch, pad_int):
     '''
     max_sentence = max([len(sentence) for sentence in sentence_batch])
     return [list(sentence) + [pad_int] * (max_sentence - len(sentence)) for sentence in sentence_batch]
+
 
 def get_batches(targets, sources, batch_size, source_pad_int, target_pad_int):
     '''
@@ -45,6 +47,38 @@ def get_batches(targets, sources, batch_size, source_pad_int, target_pad_int):
             source_lengths.append(len(source))
 
         yield pad_targets_batch, pad_sources_batch, targets_lengths, source_lengths
+
+
+def getbatches_modified(targets, keywords, pretexts, batch_size, pad_int):
+    '''
+       定义生成器，用来获取batch
+       '''
+    for batch_i in range(0, len(targets) // batch_size):
+        start_i = batch_i * batch_size
+        keywords_batch = keywords[start_i:start_i + batch_size]
+        pretexts_batch = pretexts[start_i:start_i + batch_size]
+        targets_batch = targets[start_i:start_i + batch_size]
+        # 补全序列
+        pad_keywords_batch = np.array(pad_sentence_batch(keywords_batch, pad_int))
+        pad_pretexts_batch = np.array(pad_sentence_batch(pretexts_batch, pad_int))
+        pad_targets_batch = np.array(pad_sentence_batch(targets_batch, pad_int))
+
+        # 记录每条记录的长度
+        targets_lengths = []
+        for target in targets_batch:
+            targets_lengths.append(len(target))
+
+        pretexts_lengths = []
+        for pretext in pretexts_batch:
+            pretexts_lengths.append(len(pretext))
+
+        keywords_lengths = []
+        for keyword in keywords_batch:
+            keywords_lengths.append(len(keyword))
+
+        yield pad_targets_batch, pad_keywords_batch, pad_pretexts_batch, targets_lengths, keywords_lengths, pretexts_lengths
+
+
 if __name__ == '__main__':
     id2word, word2id = extract_character_vocab(getTraindata('train-wujue.txt')[0])
     print(word2id['扬'])

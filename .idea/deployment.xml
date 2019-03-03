@@ -2,17 +2,17 @@
 <project version="4">
   <component name="PublishConfigData" autoUpload="Always" serverName="iip@114.212.86.148:22">
     <serverData>
+      <paths name="iip@114.212.85.80:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/My_poem" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="iip@114.212.86.148:22">
         <serverdata>
           <mappings>
             <mapping deploy="/home/iip/SpWannaSing/My_poem" local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="iip@cpu8:22">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

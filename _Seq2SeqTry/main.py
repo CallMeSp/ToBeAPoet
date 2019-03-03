@@ -494,6 +494,8 @@ def train_attention():
                     get_batches(train_target, train_source, batch_size,
                                 source_letter_to_int['<PAD>'],
                                 target_letter_to_int['<PAD>'])):
+                print(sources_lengths)
+                print(targets_lengths)
                 _, loss = sess.run(
                     [train_op, cost],
                     {input_data: sources_batch,
