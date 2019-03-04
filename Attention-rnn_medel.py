@@ -1,5 +1,7 @@
 import logging
 import numpy as np
+import os
+import pickle
 import tensorflow as tf
 from tensorflow.python.layers.core import Dense
 import myDataUtil
@@ -91,17 +93,21 @@ def get_encoder_layer_modified(batch_keyword_ids, batch_pretext_ids, rnn_size, n
     encoder_embed_pretexts = tf.nn.embedding_lookup(encoder_embeddings, batch_pretext_ids)
 
     #  rnn cell
-    def get_lstm_cell(rnn_size, cellname):
+    def get_lstm_cell(rnn_size):
         lstm_cell = tf.contrib.rnn.LSTMCell(rnn_size, initializer=tf.random_uniform_initializer(-0.1, 0.1, seed=2))
         return lstm_cell
 
     with tf.variable_scope('forward'):
-        keywords_fw_cell = get_lstm_cell(rnn_size, 'test1')
-        pretexts_fw_cell = get_lstm_cell(rnn_size, 'test3')
+        keywords_fw_cell = get_lstm_cell(rnn_size)
+        pretexts_fw_cell = get_lstm_cell(rnn_size)
 
     with tf.variable_scope('backward'):
-        keywords_bw_cell = get_lstm_cell(rnn_size, 'test2')
-        pretexts_bw_cell = get_lstm_cell(rnn_size, 'test4')
+        keywords_bw_cell = get_lstm_cell(rnn_size)
+        pretexts_bw_cell = get_lstm_cell(rnn_size)
+    key_fw_cells = tf.contrib.rnn.MultiRNNCell([keywords_fw_cell for i in range(num_layers)])
+    pre_fw_cells = tf.contrib.rnn.MultiRNNCell([pretexts_fw_cell for i in range(num_layers)])
+    key_bw_cells = tf.contrib.rnn.MultiRNNCell([keywords_bw_cell for i in range(num_layers)])
+    pre_bw_cells = tf.contrib.rnn.MultiRNNCell([pretexts_bw_cell for i in range(num_layers)])
 
     with tf.variable_scope('keywords'):
         (keywords_fw_outputs, keywords_bw_outputs), (
@@ -126,6 +132,7 @@ def get_encoder_layer_modified(batch_keyword_ids, batch_pretext_ids, rnn_size, n
     # concat the keywords output and the pretexts outputs
     encoder_outputs = tf.concat((keywords_outputs, pretexts_outputs), 1)
     encoder_final_state = tf.concat((keywords_final_state, pretexts_final_state), 1)
+    print('!!!!!!!!', encoder_outputs, encoder_final_state)
     return encoder_outputs, encoder_final_state
 
 
@@ -253,7 +260,7 @@ def seq2seq_model_modified(keywords_ids, pretexts_ids, targets, lr, target_seque
 
 def source_to_seq(text):
     # 对源数据进行转换
-    sequence_length = 15
+    sequence_length = 10
     return [word2id.get(word, word2id['<UNK>']) for word in text] + [
         word2id['<PAD>']] * (sequence_length - len(text))
 
@@ -429,12 +436,94 @@ def train_attention_modified():
         print('Model Trained and Saved')  # 构造graph
 
 
+def predict(input_sentence):
+    # 输入一个单词
+    # user_keywords = myDataUtil.extractKeywordFromUser(input_sentence, 4)
+    user_keywords = ['春天','桃花','美丽','生机']
+    print('keywords:',user_keywords)
+    text = [source_to_seq(word) for word in input_sentence]
+    checkpoint = "./model/trained_model_attention.ckpt"
+
+    input_keywords_ids = tf.placeholder(tf.int32, [None, None], name='inputs_keywords')
+    input_pretexts_ids = tf.placeholder(tf.int32, [None, None], name='inputs_pretexts')
+    input_keywords_length = tf.placeholder(tf.int32, [None], name='kerwords_sequence_length')
+    input_pretexts_length = tf.placeholder(tf.int32, [None], name='pretexts_sequence_length')
+    targets = tf.placeholder(tf.int32, [None, None], name='targets')
+    learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+    target_sequence_length = tf.placeholder(
+        tf.int32, (None,), name='target_sequence_length')
+    max_target_sequence_length = tf.reduce_max(
+        target_sequence_length, name='max_target_len')
+
+    loaded_graph = tf.Graph()
+    with tf.Session(graph=loaded_graph) as sess:
+        # 加载模型
+        loader = tf.train.import_meta_graph(checkpoint + '.meta')
+        loader.restore(sess, checkpoint)
+
+        input_keyword = loaded_graph.get_tensor_by_name('inputs_keywords:0')
+        input_pretext = loaded_graph.get_tensor_by_name('inputs_pretexts:0')
+        print(input_keyword)
+        logits = loaded_graph.get_tensor_by_name('predictions:0')
+        print(logits)
+        keywords_sequence_length = loaded_graph.get_tensor_by_name('kerwords_sequence_length:0')
+        pretexts_sequence_length = loaded_graph.get_tensor_by_name('pretexts_sequence_length:0')
+        print(keywords_sequence_length)
+        target_sequence_length = loaded_graph.get_tensor_by_name('target_sequence_length:0')
+        print(target_sequence_length)
+        testpretexts = [[]]
+        testpretexts_length = [0,5,11,17]
+        for i in range(4):
+            answer_logits = sess.run(logits, {input_keyword: [text[i]] * batch_size,
+                                              input_pretext: [source_to_seq(testpretexts[i])] * batch_size,
+                                              target_sequence_length: [5] * batch_size,
+                                              keywords_sequence_length: [len(user_keywords[i])] * batch_size,
+                                              pretexts_sequence_length: [testpretexts_length[i]] * batch_size})[0]
+            pad = word2id["<PAD>"]
+            responseIds = [i for i in answer_logits if i != pad]
+            responseWords = " ".join([id2word[i] for i in answer_logits if i != pad])
+            if not i==0:
+                testpretexts.append(testpretexts[i] + ',' + responseWords)
+            else:
+                testpretexts.append(responseWords)
+            print('step', i, ':', testpretexts)
+
+        print('原始输入:', 'keyword:', user_keywords)
+        print('Response : {}'.format(testpretexts[-1]))
+
+    # pad = word2id["<PAD>"]
+    #
+    # print('原始输入:', 'keyword:',input_word,',pretext:',input_pretext)
+    #
+    # print('\nSource')
+    # print('  Word 编号:    {}'.format([i for i in text]))
+    # print('  Input Words: {}'.format(" ".join([id2word[i] for i in text])))
+    #
+    # print('\nTarget')
+    # print('  Word 编号:       {}'.format([i for i in answer_logits if i != pad]))
+    # print('  Response Words: {}'.format(" ".join([id2word[i] for i in answer_logits if i != pad])))
+
+
 if __name__ == '__main__':
     # 构造映射表
     traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
-    id2word, word2id = extract_character_vocab(traindatas)
+    id2word_path = './data/id2word.pkl'
+    word2id_path = './data/word2id.pkl'
+    if os.path.exists(id2word_path) and os.path.exists(word2id_path):
+        print('use exist word2id&id2word dict')
+        with open(word2id_path, 'rb') as fr:
+            word2id = pickle.load(fr)
+        with open(id2word_path, 'rb') as fr:
+            id2word = pickle.load(fr)
+    else:
+        print('generate new word2id&id2word dict')
+        id2word, word2id = extract_character_vocab(traindatas)
+        with open(word2id_path, 'wb') as fw:
+            pickle.dump(word2id, fw)
+        with open(id2word_path, 'wb') as fw:
+            pickle.dump(id2word, fw)
     WORDEMBEDDING = genwordEmbedding(id2word)
-    print('word2id lenths:', len(word2id), 'wordembedding_shape', len(WORDEMBEDDING),',',len(WORDEMBEDDING[0]))
+    print('word2id lenths:', len(word2id), 'wordembedding_shape', len(WORDEMBEDDING), ',', len(WORDEMBEDDING[0]))
     # 对字母进行转换
     keywords_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in keywords]
     pretexts_int = [[word2id.get(letter, word2id['<UNK>']) for letter in line] for line in pretexts]
@@ -442,17 +531,18 @@ if __name__ == '__main__':
                     curlines]
     # 超参数
     # Number of Epochs
-    epochs = 60
+    epochs = 30
     # Batch Size
-    batch_size = 128
+    batch_size = 64
     # RNN Size
-    rnn_size = 196
+    rnn_size = 512
     # Number of Layers
-    num_layers = 1
+    num_layers = 2
     # Embedding Size
     encoding_embedding_size = 300
     decoding_embedding_size = 300
     # Learning Rate
     learning_rate = 0.001
     print('modified attention start....')
+    # predict('小草偷偷地从土里钻出来，嫩嫩的，绿绿的。园子里，田野里，瞧去，一大片一大片满是的。坐着，躺着，打两个滚，踢几脚球，赛几趟跑，捉几回迷藏。风轻悄悄的，草软绵绵的。')
     train_attention_modified()
