@@ -65,7 +65,9 @@ def get_encoder_layer_modified(batch_keyword_ids, batch_pretext_ids, rnn_size, n
             cell_fw=pretexts_fw_cell, cell_bw=pretexts_bw_cell, inputs=encoder_embed_pretexts,
             sequence_length=pretexts_length, dtype=tf.float32, time_major=False)
     # outputs shape:[batch_size,keywords_max_length,2*rnn_size]
-    keywords_outputs = tf.concat((keywords_fw_outputs, keywords_bw_outputs), 2)
+    # keywords_outputs = tf.concat((keywords_fw_outputs, keywords_bw_outputs), 2)
+    keywords_outputs = tf.concat((keywords_fw_outputs[:, -1], keywords_bw_outputs[:, 0]), -1)
+    keywords_outputs = tf.expand_dims(keywords_outputs, 1)
     keywords_final_state_c = tf.concat((keywords_fw_state.c, keywords_bw_state.c), 1)
     keywords_final_state_h = tf.concat((keywords_fw_state.h, keywords_bw_state.h), 1)
     keywords_final_state = tf.contrib.rnn.LSTMStateTuple(c=keywords_final_state_c, h=keywords_final_state_h)
@@ -77,7 +79,6 @@ def get_encoder_layer_modified(batch_keyword_ids, batch_pretext_ids, rnn_size, n
     # concat the keywords output and the pretexts outputs
     encoder_outputs = tf.concat((keywords_outputs, pretexts_outputs), 1)
     encoder_final_state = tf.concat((keywords_final_state, pretexts_final_state), 1)
-    print('!!!!!!!!', encoder_outputs, encoder_final_state)
     return encoder_outputs, encoder_final_state
 
 
@@ -174,7 +175,7 @@ def seq2seq_model_modified(keywords_ids, pretexts_ids, targets, lr, target_seque
                                                                encoder_embedding_size)
     # the input of decoder which processed
     decoder_input = process_decoder_input(targets, word2id, batch_size)
-    source_sequence_length = keywords_sequence_length + pretexts_sequence_length
+    source_sequence_length = pretexts_sequence_length + 1
     # print(keywords_sequence_length)
     # print(pretexts_sequence_length)
     # print(source_sequence_length)
@@ -225,18 +226,19 @@ def train_attention_modified():
                                 for grad, var in gradients if grad is not None]
             train_op = optimizer.apply_gradients(capped_gradients)
     # 将数据集分割为train和validation
-    train_keywords = keywords_int[50 * batch_size:]
-    train_pretexts = pretexts_int[50 * batch_size:]
-    train_target = curlines_int[50 * batch_size:]
+    train_keywords = keywords_int[300 * batch_size:]
+    train_pretexts = pretexts_int[300 * batch_size:]
+    train_target = curlines_int[300 * batch_size:]
     # 留出一个batch进行验证
-    valid_keywords = keywords_int[:50 * batch_size]
-    valid_pretexts = pretexts_int[:50 * batch_size]
-    valid_target = curlines_int[:50 * batch_size]
+    valid_keywords = keywords_int[:300 * batch_size]
+    valid_pretexts = pretexts_int[:300 * batch_size]
+    valid_target = curlines_int[:300 * batch_size]
     (valid_targets_batch, valid_keywords_batch, valid_pretexts_batch, valid_targets_lengths, valid_keywords_lengths,
      valid_pretexts_length) = next(
         getbatches_modified(valid_target, valid_keywords, valid_pretexts, batch_size, word2id['<PAD>']))
     display_step = 50  # 每隔50轮输出loss
     checkpoint = "./model/trained_model_attention.ckpt"
+    checkpoint_path = './model/trained_model_attention_qijue_epoch'
     with tf.Session(graph=train_graph) as sess:
         sess.run(tf.global_variables_initializer())
         for epoch_i in range(1, epochs + 1):
@@ -273,20 +275,24 @@ def train_attention_modified():
                                   len(train_target) // batch_size,
                                   loss,
                                   validation_loss[0]))
+            checkpoint = checkpoint_path + str(epoch_i) + '.ckpt'
+            saver = tf.train.Saver()
+            saver.save(sess, checkpoint)
+            print('Model Trained and Saved')
 
-        # 保存模型
-        saver = tf.train.Saver()
-        saver.save(sess, checkpoint)
-        print('Model Trained and Saved')  # 构造graph
+        # # 保存模型
+        # saver = tf.train.Saver()
+        # saver.save(sess, checkpoint)
+        # print('Model Trained and Saved')  # 构造graph
 
 
 def predict(input_sentence):
     # 输入一个单词
-    # user_keywords = myDataUtil.extractKeywordFromUser(input_sentence, 4)
-    user_keywords = ['树', '土', '黄花', '白云']
+    user_keywords = myDataUtil.extractKeywordFromUser(input_sentence, 4)
+    # user_keywords = ['工', '头', '牛', '逼']
     print('keywords:', user_keywords)
     text = [source_to_seq(word) for word in input_sentence]
-    checkpoint = "./model/trained_model_attention.ckpt"
+    checkpoint = './model/trained_model_attention_qijue_epoch2.ckpt'
 
     input_keywords_ids = tf.placeholder(tf.int32, [None, None], name='inputs_keywords')
     input_pretexts_ids = tf.placeholder(tf.int32, [None, None], name='inputs_pretexts')
@@ -316,11 +322,11 @@ def predict(input_sentence):
         target_sequence_length = loaded_graph.get_tensor_by_name('target_sequence_length:0')
         print(target_sequence_length)
         testpretexts = [[]]
-        testpretexts_length = [0, 5, 11, 17]
+        testpretexts_length = [0, 7, 15, 23]
         for i in range(4):
             answer_logits = sess.run(logits, {input_keyword: [text[i]] * batch_size,
                                               input_pretext: [source_to_seq(testpretexts[i])] * batch_size,
-                                              target_sequence_length: [5] * batch_size,
+                                              target_sequence_length: [7] * batch_size,
                                               keywords_sequence_length: [len(user_keywords[i])] * batch_size,
                                               pretexts_sequence_length: [testpretexts_length[i]] * batch_size})[0]
             pad = word2id["<PAD>"]
@@ -330,7 +336,7 @@ def predict(input_sentence):
                 testpretexts.append(testpretexts[i] + ',' + responseWords)
             else:
                 testpretexts.append(responseWords)
-            print('step', i, ':', testpretexts)
+            print('step', i, ':', testpretexts[i + 1])
 
         print('原始输入:', 'keyword:', user_keywords)
         print('Response : {}'.format(testpretexts[-1]))
@@ -338,9 +344,9 @@ def predict(input_sentence):
 
 if __name__ == '__main__':
     # 构造映射表
-    traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-wujue.txt')
-    id2word_path = './data/id2word.pkl'
-    word2id_path = './data/word2id.pkl'
+    traindatas, keywords, pretexts, curlines = myDataUtil.getTraindata('train-qijue.txt')
+    id2word_path = './data/id2word_qi.pkl'
+    word2id_path = './data/word2id_qi.pkl'
     if os.path.exists(id2word_path) and os.path.exists(word2id_path):
         print('use exist word2id&id2word dict')
         with open(word2id_path, 'rb') as fr:
@@ -363,9 +369,9 @@ if __name__ == '__main__':
                     curlines]
     # 超参数
     # Number of Epochs
-    epochs = 30
+    epochs = 20
     # Batch Size
-    batch_size = 256
+    batch_size = 128
     # RNN Size
     rnn_size = 512
     # Number of Layers
@@ -374,7 +380,7 @@ if __name__ == '__main__':
     encoding_embedding_size = 300
     decoding_embedding_size = 300
     # Learning Rate
-    learning_rate = 0.001
+    learning_rate = 1e-3
     print('modified attention start....')
     predict('小草偷偷地从土里钻出来，嫩嫩的，绿绿的。园子里，田野里，瞧去，一大片一大片满是的。坐着，躺着，打两个滚，踢几脚球，赛几趟跑，捉几回迷藏。风轻悄悄的，草软绵绵的。')
     # train_attention_modified()

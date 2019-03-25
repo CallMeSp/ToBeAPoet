@@ -76,6 +76,7 @@ def getbatches_modified(targets, keywords, pretexts, batch_size, pad_int):
         keywords_lengths = []
         for keyword in keywords_batch:
             keywords_lengths.append(len(keyword))
+            # keywords_lengths.append(1)
 
         yield pad_targets_batch, pad_keywords_batch, pad_pretexts_batch, targets_lengths, keywords_lengths, pretexts_lengths
 

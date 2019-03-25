@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7616ed95-5c45-46e4-9b0f-ca037c958bac" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Attention-rnn_medel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Attention-rnn_medel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/aTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/aTest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/myDataUtil.py" beforeDir="false" afterPath="$PROJECT_DIR$/myDataUtil.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/word2vecHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/word2vecHelper.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,15 +16,16 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/ToBeAPoet$Attention_rnn_medel.coverage" NAME="Attention-rnn_medel Coverage Results" MODIFIED="1551621411920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/My_poem$DataUtil.coverage" NAME="DataUtil Coverage Results" MODIFIED="1551236476442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ToBeAPoet$main.coverage" NAME="main Coverage Results" MODIFIED="1551619628846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_Seq2SeqTry" />
+    <SUITE FILE_PATH="coverage/My_poem$train.coverage" NAME="train Coverage Results" MODIFIED="1551444093494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_attentionTry" />
+    <SUITE FILE_PATH="coverage/My_poem$main.coverage" NAME="main Coverage Results" MODIFIED="1551534955113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_Seq2SeqTry" />
     <SUITE FILE_PATH="coverage/My_poem$Attention_rnn_medel.coverage" NAME="Attention-rnn_medel Coverage Results" MODIFIED="1551704127083" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/My_poem$word2vecHelper.coverage" NAME="word2vecHelper Coverage Results" MODIFIED="1551624235044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ToBeAPoet$main.coverage" NAME="main Coverage Results" MODIFIED="1551619628846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_Seq2SeqTry" />
-    <SUITE FILE_PATH="coverage/My_poem$DataUtil.coverage" NAME="DataUtil Coverage Results" MODIFIED="1551236476442" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ToBeAPoet$myDataUtil.coverage" NAME="myDataUtil Coverage Results" MODIFIED="1551513387556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/My_poem$main.coverage" NAME="main Coverage Results" MODIFIED="1551534955113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_Seq2SeqTry" />
+    <SUITE FILE_PATH="coverage/ToBeAPoet$aTest.coverage" NAME="aTest Coverage Results" MODIFIED="1552702203508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ToBeAPoet$Attention_rnn_medel.coverage" NAME="Attention-rnn_medel Coverage Results" MODIFIED="1552743646986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/My_poem$aTest.coverage" NAME="aTest Coverage Results" MODIFIED="1551440170754" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/My_poem$train.coverage" NAME="train Coverage Results" MODIFIED="1551444093494" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_attentionTry" />
+    <SUITE FILE_PATH="coverage/ToBeAPoet$myDataUtil.coverage" NAME="myDataUtil Coverage Results" MODIFIED="1552704804863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -40,8 +46,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/myDataUtil.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="297">
-              <caret line="28" column="26" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="26" />
+            <state relative-caret-position="3175">
+              <caret line="128" column="42" selection-start-line="128" selection-start-column="42" selection-end-line="128" selection-end-column="42" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -52,8 +58,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/word2vecHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="13" column="25" lean-forward="true" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
+            <state relative-caret-position="1900">
+              <caret line="78" column="14" selection-start-line="78" selection-start-column="14" selection-end-line="78" selection-end-column="14" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -64,8 +70,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Attention-rnn_medel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="374" column="33" lean-forward="true" selection-start-line="374" selection-start-column="33" selection-end-line="374" selection-end-column="33" />
+            <state relative-caret-position="5793">
+              <caret line="299" column="93" lean-forward="true" selection-start-line="299" selection-start-column="93" selection-end-line="299" selection-end-column="93" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -74,22 +80,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_Seq2SeqTry/main.py">
+        <entry file="file://$PROJECT_DIR$/aTest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8734">
-              <caret line="329" column="29" lean-forward="true" selection-start-line="329" selection-start-column="29" selection-end-line="329" selection-end-column="29" />
+            <state relative-caret-position="500">
+              <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
               <folding>
-                <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#0#23#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/train-wujue.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1683">
-              <caret line="3" column="20" selection-start-line="3" selection-start-column="3" selection-end-line="3" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -133,18 +130,20 @@
         <option value="$PROJECT_DIR$/_attentionTry/attention.py" />
         <option value="$PROJECT_DIR$/_attentionTry/utils.py" />
         <option value="$PROJECT_DIR$/_attentionTry/train.py" />
-        <option value="$PROJECT_DIR$/aTest.py" />
         <option value="$PROJECT_DIR$/_Seq2SeqTry/data/letters_target.txt" />
-        <option value="$PROJECT_DIR$/myDataUtil.py" />
         <option value="$PROJECT_DIR$/_Seq2SeqTry/main.py" />
         <option value="$PROJECT_DIR$/word2vecHelper.py" />
+        <option value="$PROJECT_DIR$/aTest.py" />
+        <option value="$PROJECT_DIR$/myDataUtil.py" />
         <option value="$PROJECT_DIR$/Attention-rnn_medel.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="1280" />
-    <option name="height" value="1080" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -154,28 +153,23 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="My_poem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="My_poem" type="462c0819:PsiDirectoryNode" />
+              <item name="ToBeAPoet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ToBeAPoet" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="My_poem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="My_poem" type="462c0819:PsiDirectoryNode" />
-              <item name="_Seq2SeqTry" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="My_poem" type="b2602c69:ProjectViewProjectNode" />
-              <item name="My_poem" type="462c0819:PsiDirectoryNode" />
+              <item name="ToBeAPoet" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ToBeAPoet" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -217,6 +211,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Attention-rnn_medel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="aTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="My_poem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/aTest.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -269,28 +285,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="train" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="My_poem" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/_attentionTry" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_attentionTry/train.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="word2vecHelper" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="My_poem" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -316,10 +310,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.Attention-rnn_medel" />
+        <item itemvalue="Python.myDataUtil" />
+        <item itemvalue="Python.aTest" />
         <item itemvalue="Python.word2vecHelper" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.myDataUtil" />
-        <item itemvalue="Python.train" />
       </list>
     </recent_temporary>
   </component>
@@ -347,11 +341,15 @@
       <workItem from="1551622484994" duration="132000" />
       <workItem from="1551622637579" duration="6020000" />
       <workItem from="1551667530256" duration="9950000" />
+      <workItem from="1551941921838" duration="4367000" />
+      <workItem from="1552655105273" duration="13000" />
+      <workItem from="1552655942420" duration="18678000" />
+      <workItem from="1552743455896" duration="243000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="94100000" />
+    <option name="totallyTimeSpent" value="117401000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -363,10 +361,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="2560" height="1080" extended-state="6" />
+    <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0955414" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09300477" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -379,16 +377,16 @@
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32978722" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32978722" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32917318" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32978722" />
-      <window_info anchor="bottom" id="File Transfer" order="12" weight="0.2531915" />
+      <window_info anchor="bottom" id="File Transfer" order="12" weight="0.34399375" />
       <window_info anchor="bottom" id="Database" order="13" weight="0.32978722" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Remote Host" order="3" />
       <window_info anchor="right" id="SciView" order="4" />
-      <window_info active="true" anchor="right" id="Run" order="5" visible="true" weight="0.48407644" />
+      <window_info anchor="right" id="Run" order="5" weight="0.3891097" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -437,36 +435,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/_Seq2SeqTry/data/letters_source.txt" />
     <entry file="file://$PROJECT_DIR$/_Seq2SeqTry/data/letters_target.txt" />
-    <entry file="file://$PROJECT_DIR$/aTest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="197" column="49" selection-start-line="197" selection-start-column="49" selection-end-line="197" selection-end-column="49" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/wujue-all.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/pro_wujue-all.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/myDataUtil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="28" column="26" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#40#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_Seq2SeqTry/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8734">
-          <caret line="329" column="29" lean-forward="true" selection-start-line="329" selection-start-column="29" selection-end-line="329" selection-end-column="29" />
+        <state relative-caret-position="8225">
+          <caret line="329" column="29" selection-start-line="329" selection-start-column="29" selection-end-line="329" selection-end-column="29" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -475,25 +447,74 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/train-wujue.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1683">
-          <caret line="3" column="20" selection-start-line="3" selection-start-column="3" selection-end-line="3" selection-end-column="20" />
+        <state relative-caret-position="100">
+          <caret line="4" column="9" lean-forward="true" selection-start-line="4" selection-start-column="9" selection-end-line="4" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/wujue-all.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/pro_wujue-all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/pro_qijue-all.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/train-qijue.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5100" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/qijue-all.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/qilv-all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1694761" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/wulv-all.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/myDataUtil.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3175">
+          <caret line="128" column="42" selection-start-line="128" selection-start-column="42" selection-end-line="128" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/word2vecHelper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="429">
-          <caret line="13" column="25" lean-forward="true" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
+        <state relative-caret-position="1900">
+          <caret line="78" column="14" selection-start-line="78" selection-start-column="14" selection-end-line="78" selection-end-column="14" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/aTest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="21" column="24" selection-start-line="21" selection-start-column="24" selection-end-line="21" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Attention-rnn_medel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="374" column="33" lean-forward="true" selection-start-line="374" selection-start-column="33" selection-end-line="374" selection-end-column="33" />
+        <state relative-caret-position="5793">
+          <caret line="299" column="93" lean-forward="true" selection-start-line="299" selection-start-column="93" selection-end-line="299" selection-end-column="93" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

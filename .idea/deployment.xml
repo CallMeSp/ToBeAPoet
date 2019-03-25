@@ -14,6 +14,10 @@
           <mappings>
             <mapping deploy="/home/iip/SpWannaSing/My_poem" local="$PROJECT_DIR$" />
           </mappings>
+          <excludedPaths>
+            <excludedPath path="/home/iip/SpWannaSing/My_poem/mmodel" />
+            <excludedPath path="/home/iip/SpWannaSing/My_poem/model" />
+          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>

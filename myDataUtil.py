@@ -96,8 +96,8 @@ def genProcessedData(filename):
             fw.write(tt[i] + ':' + '，'.join(pp[i]) + '\n')
 
 
-def genTrainData(filename):
-    filepath = './data/' + filename
+def genTrainData(sourcename, targetname):
+    filepath = './data/' + sourcename
     titles, poems = loadCorpus(filepath)
     trainDatas = []
     count = {}
@@ -111,8 +111,8 @@ def genTrainData(filename):
                 # print(keyword, '||', preText, '||', curLine)
         except:
             count[step] = 1
-            print(step, '/', '16786')
-    with open('./data/train-wujue.txt', 'w+', encoding='utf8') as fw:
+            print(step, '/', len(titles))
+    with open('./data/' + targetname, 'w+', encoding='utf8') as fw:
         for line in trainDatas:
             fw.write('|'.join(line) + '\n')
     print(len(count), '/', len(poems))
@@ -122,7 +122,7 @@ def getTraindata(filename):
     filepath = './data/' + filename
     traindatas = []
     keywords = []
-    pretexts = []
+    pretexts = []，
     curlines = []
     with open(filepath, 'r', encoding='utf8') as fr:
         for line in fr.readlines():
@@ -135,5 +135,5 @@ def getTraindata(filename):
 
 
 if __name__ == '__main__':
-    genTrainData('pro_wujue-all.txt')
+    genTrainData('pro_qijue-all.txt', 'train-qijue.txt')
     pass
